@@ -1,0 +1,97 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<title>Browse Notes</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+
+<!-- 🔥 NAVBAR -->
+<div class="navbar">
+    <h2>📚 Notes Portal</h2>
+    <div>
+        <a href="/">Home</a>
+        <a href="/upload_page">Upload</a>
+        <a href="/notes">Notes</a>
+        {% if role == "admin" %}
+        <a href="/admin">Admin</a>
+        {% endif %}
+        <a href="/logout">Logout</a>
+        <span class="user-info">👤 {{ username }} ({{ role }})</span>
+    </div>
+</div>
+
+<div class="container">
+
+<h2>Browse Notes</h2>
+
+<!-- 🔍 SEARCH + FILTER -->
+<form method="GET" class="filter-box">
+
+    <input type="text" name="search" placeholder="🔍 Search notes...">
+    <input type="text" name="subject" placeholder="Subject">
+    <input type="text" name="semester" placeholder="Semester">
+    <input type="text" name="year" placeholder="Year">
+    <input type="text" name="batch" placeholder="Batch">
+
+    <select name="sort">
+        <option value="">Sort</option>
+        <option value="latest">Latest</option>
+        <option value="oldest">Oldest</option>
+    </select>
+
+    <button type="submit">Filter</button>
+
+</form>
+
+<hr>
+
+<h3>Available Notes</h3>
+
+<!-- ✅ EMPTY STATE -->
+{% if notes|length == 0 %}
+    <p style="text-align:center;">😔 No notes found</p>
+{% else %}
+
+    <!-- 📄 LOOP -->
+    {% for note in notes %}
+    <div class="note-card">
+
+        <div class="note-info">
+            <h4>
+                📄 {{ note[1] }} 
+                ({{ note[6].split('.')[-1].upper() }})
+            </h4>
+
+            <p>
+                {{ note[2] }} | Sem {{ note[3] }} <br>
+                Year: {{ note[4] }} | Batch: {{ note[5] }} <br>
+                Uploaded by: {{ note[7] }} <br>
+                📅 {{ note[8] }} <br>
+                ⬇ {{ note[9] }} downloads
+            </p>
+        </div>
+
+        <div class="note-actions">
+            <a href="/download/{{ note[6] }}" target="_blank">👁 View</a>
+            <a class="download-btn" href="/download/{{ note[6] }}">⬇ Download</a>
+
+            {% if role == "admin" %}
+            <a class="delete-btn"
+               onclick="return confirm('Are you sure you want to delete this note?')"
+               href="/delete/{{ note[0] }}">
+               🗑 Delete
+            </a>
+            {% endif %}
+        </div>
+
+    </div>
+    {% endfor %}
+
+{% endif %}
+
+</div>
+
+</body>
+</html>
